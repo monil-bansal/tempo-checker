@@ -1,0 +1,63 @@
+<html>
+
+<head>
+
+
+</head>
+
+<body>
+    <script type="text/javascript">
+
+        let spacebarTimestamps = [];
+
+
+
+        document.addEventListener('keydown', (event) => {
+            if (event.code === 'Space') {
+                let currentTime = performance.now() / 1000;
+                spacebarTimestamps.push(currentTime);
+                if (spacebarTimestamps.length > 1) {
+                    calculateSpacebarTempo(spacebarTimestamps);
+                }
+            }
+        });
+        let score = 0
+        let bpm = -1
+        let newBpm = -1
+        function calculateSpacebarTempo(timestamps) {
+            if (timestamps.length < 2) return;
+            let size = timestamps.length
+            let newBpm = 60/(timestamps[size-1]-timestamps[size-2])
+
+            // let intervals = [];
+            // for (let i = 1; i < timestamps.length; i++) {
+            //     intervals.push(timestamps[i] - timestamps[i - 1]);
+            // }
+            // let avgInterval = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+            // let bpm = 60 / avgInterval;
+            document.getElementById('bpmDisplay').textContent = `Spacebar BPM: ${Math.round(bpm)}`;
+            if(bpm != -1){
+                let scoreAdded = (Math.abs(newBpm - bpm) <= 5)
+                if(scoreAdded){
+                    score = score + 1
+                }
+                else score = 0
+                document.getElementById('score').textContent = `Score ${Math.round(score)}`;
+            }
+            bpm = newBpm
+        }
+
+        document.body.innerHTML = `
+    <div style="text-align: center; font-family: Arial, sans-serif; margin-top: 50px;">
+        <h1>Tap the Spacebar to Measure BPM</h1>
+        <p>Press the spacebar multiple times to calculate your tempo.</p>
+        <h2 id="bpmDisplay">Spacebar BPM: -- </h2>
+        <br />
+        <h3 id="score"> </h3>
+    </div>
+`;
+    </script>
+
+</body>
+
+</html>
